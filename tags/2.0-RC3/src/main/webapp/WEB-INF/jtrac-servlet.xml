@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!-- application context definition for "jtrac" Dispatcher Servlet (Spring MVC front controller) -->
+
+<beans> 
+
+    <!-- custom exception resolver that allows us to gracefully recover from
+    - Spring WebFlow exceptions caused when the user hits the browser back button
+    -->
+    <bean class="info.jtrac.web.FlowExceptionResolver"/>
+    
+    <!-- multipart resolver for file upload handling  --> 
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="5120000"/>
+    </bean>	    
+    
+    <!--
+    - This sets up a uniform short-cut way to map the view logical name (with JSTL support)
+    - to the actual web resource (jsp).  A more complex mapping can be done with a resource bundle
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <!-- explicit URL mapper used by the "jtrac" DispatcherServlet -->    
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+                    <property name="sessionFactory" ref="sessionFactory"/>
+                </bean>
+                <!--
+                <bean class="info.jtrac.web.FlowControllerHandlerInterceptor"/>
+                -->
+            </list>
+        </property>
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="urlMap">
+            <map>
+                <entry key="/flow/**" value-ref="flowController"/>                
+                <entry key="/**" value-ref="defaultController"/>               
+            </map>
+        </property>
+    </bean>    
+    
+    <!--
+    - This is a MultiActionController that manages simple view rendering where backend services 
+    - are invoked but there is no need for form binding or a FormController
+    -->
+    <bean id="defaultController" class="info.jtrac.web.DefaultMultiActionController">
+        <property name="methodNameResolver">
+            <bean class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+                <property name="alwaysUseFullPath" value="true"/>
+                <property name="mappings">
+                    <props>
+                        <prop key="/auth/login.htm">loginHandler</prop>
+                        <prop key="/auth/logout.htm">logoutHandler</prop>
+                        <prop key="/app/options.htm">optionsHandler</prop>
+                        <prop key="/app/svn_form.htm">svnFormHandler</prop>
+                        <prop key="/app">dashboardHandler</prop>                        
+                        <prop key="/app/reindex.htm">reindexHandler</prop>
+                        <prop key="/app/user_list.htm">userListHandler</prop>
+                        <prop key="/app/space_list.htm">spaceListHandler</prop>
+                        <prop key="/app/config_list.htm">configListHandler</prop>
+                        <prop key="/app/svn_view.htm">svnViewHandler</prop>
+                        <prop key="/app/item_list_excel.htm">itemListExcelHandler</prop>
+                        <prop key="/app/attachments/*">attachmentViewHandler</prop>
+                        <prop key="/app/chart/svn_commits_per_committer.jpg">svnCommitsPerCommitterChartHandler</prop>
+                    </props>
+                </property>
+            </bean>        
+        </property>
+        <property name="jtrac" ref="jtrac"/>
+        <property name="flowExecutionRepositoryFactory" ref="repositoryFactory"/>
+        <property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+    </bean>    
+    
+    <!-- ======================== SPRING WEB FLOW ============================ -->
+    
+    <bean name="flowController" class="org.springframework.webflow.executor.mvc.FlowController">
+        <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="argumentExtractor">
+            <bean class="org.springframework.webflow.executor.support.RequestPathFlowExecutorArgumentExtractor"/>
+        </property>        
+    </bean>
+
+    <bean id="flowExecutor" class="org.springframework.webflow.executor.FlowExecutorImpl">
+        <constructor-arg ref="repositoryFactory"/>
+    </bean>
+
+    <bean id="repositoryFactory" class="org.springframework.webflow.execution.repository.support.DefaultFlowExecutionRepositoryFactory">
+        <constructor-arg ref="flowRegistry"/>
+        <!--
+        <property name="listenerLoader">
+            <bean class="info.jtrac.webflow.FlowExecutionListenerLoader"/>
+        </property>
+        -->
+    </bean>
+
+    <bean name="flowRegistry" class="org.springframework.webflow.registry.XmlFlowRegistryFactoryBean">
+        <property name="flowLocations" value="/WEB-INF/flow/*.xml"/>
+    </bean>
+    
+    <!-- ======================== CONTROLLERS ============================ -->
+    
+    <bean id="itemFormAction" class="info.jtrac.webflow.ItemFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>    
+    
+    <bean id="itemViewFormAction" class="info.jtrac.webflow.ItemViewFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>      
+    
+    <bean id="userFormAction" class="info.jtrac.webflow.UserFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>
+    
+    <bean id="spaceFormAction" class="info.jtrac.webflow.SpaceFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>
+    
+    <bean id="fieldFormAction" class="info.jtrac.webflow.FieldFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>    
+    
+    <bean id="itemSearchFormAction" class="info.jtrac.webflow.ItemSearchFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>
+      
+    <bean id="configFormAction" class="info.jtrac.webflow.ConfigFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean>
+    
+    <bean id="excelFormAction" class="info.jtrac.webflow.ExcelFormAction">
+        <property name="jtrac" ref="jtrac"/>
+    </bean> 
+        
+</beans>

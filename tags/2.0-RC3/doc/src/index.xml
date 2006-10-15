@@ -1,0 +1,1019 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<book>
+    <bookinfo>
+        <title>JTrac</title>
+        <subtitle>User / Developer Guide</subtitle>
+        <releaseinfo>2.0-RC3</releaseinfo>
+        <authorgroup>
+            <author>
+                <firstname>Peter</firstname>
+                <surname>Thomas</surname>
+            </author>
+        </authorgroup>
+    </bookinfo>
+
+    <toc/>
+
+    <preface id="preface">
+        <title>Preface</title>
+        <para>
+            This document is a reference guide for <ulink url="http://jtrac.info">JTrac</ulink>
+            - the generic issue tracking web-application.  This document is not only a user-guide
+            but can also serve as a reference for developers interested in contributing to JTrac.
+        </para>
+        <para>
+            This documentation has been generated using the DocBook configuration 
+            used by the <ulink url="http://www.springframework.org">Spring</ulink> development team. 
+            This particular simplified DocBook helper package was originally developed by Chris Bauer of the
+            <ulink url="http://www.hibernate.org">Hibernate</ulink> project.  Thanks go out to all those who
+            perfected this very handy approach.
+        </para>
+    </preface>
+
+    <chapter id="introduction">
+        <title>Introduction</title>
+        <sect1 id="introduction-about">
+            <title>About</title>
+            <para>
+                JTrac is a generic issue-tracking web-application that can be easily customized by adding 
+                custom fields and drop-downs. Features include customizable workflow, field level permissions, 
+                e-mail integration, file attachments and a detailed history view.
+            </para>
+            <para>
+                JTrac was created after the author felt that he could write a much better alternative to a 
+                commercial defect tracking tool that he was having to use. Development started in 2004. 
+                There have been quite a few releases already and a small but growing base of satisfied users exist 
+                who are friends and colleagues of the author. JTrac is ideal for issue tracking but is so generic 
+                that you can use it to track well - almost anything.
+            </para>
+            <para>
+                JTrac development used to be hosted at <ulink url="https://jtrac.dev.java.net"/> but moved to SourceForge 
+                in early 2006. The older working version was based on Spring JDBC and MS Access and is not being maintained
+                any more.  JTrac was completely re-written to use <ulink url="http://www.hibernate.org/">Hibernate</ulink>
+                for persistence and the <ulink url="http://www.acegisecurity.org/">Acegi Security</ulink> framework for Spring 
+                and it now uses the latest Java 5.0 and JSP 2.0 features. 
+            </para>            
+        </sect1>        
+        
+        <sect1 id="introduction-releasenotes">
+            <title>Release Notes: Version 2.0-RC3</title>
+            <para>
+                Note that the database schema has changed!  If you are using an earlier version of JTrac in production
+                you have to upgrade your database schema as well as the bundled Jetty web server.  
+                Instructions on how to upgrade are available 
+                <ulink url="http://sourceforge.net/forum/forum.php?thread_id=1592046&amp;forum_id=552477">here</ulink>
+                on the JTrac forums.
+            </para>
+            <para>
+                JTrac 2.0 final should be available by the end of October 2006. Development has been slower than 
+                expected and the earlier target of June 2006 has admittedly not been met.  RC3 has almost all the
+                "most wanted" features in place, and we are expecting 2.0 final to be out in October 2006 itself.
+            </para>
+            <para>
+                You are encouraged to try out JTrac and communicate your feedback and interest in future versions
+                to the JTrac development team.  Note that you can be up and running with just Java 5 as a prerequisite
+                as JTrac comes bundled with a small-footprint web-application server called 
+                <ulink url="http://jetty.mortbay.org/">Jetty</ulink>. JTrac also uses an embedded database called 
+                <ulink url="http://www.hsqldb.org/">HSQLDB</ulink> by default which makes it extremely easy to evaluate.
+            </para>
+            <para>
+                Please see the <link linkend="installation">installation</link> section of this documentation for 
+                more details like how you can drop the WAR file into a server of your choice and immediately 
+                start using JTrac.                
+            </para>
+        </sect1>         
+    </chapter>
+    
+    <chapter id="features">
+        <title>Features</title>
+        <sect1 id="features-overview">                
+            <title>Overview</title>
+            <para>                    
+                JTrac has all the features you would expect from a standard issue-tracking application such as 
+                support for file-attachments and e-mail integration.  JTrac offers powerful customization options,
+                especially in the areas of workflow and field-level permissions and compares well to even
+                commercial tools.
+            </para>
+        </sect1>
+        <sect1 id="features-easytoinstall">
+            <title>Easy to Install</title>
+            <para>
+                One of the useful features of JTrac is that it is distributed with an embedded web-application server 
+                (<ulink url="http://jetty.mortbay.org/">Jetty</ulink>) that has a very small footprint.  
+                If you have Java 5 installed you can be up and running after downloading and extracting JTrac - by 
+                simply using the provided start and stop scripts.  JTrac scans its environment on startup and if a 
+                configured database is not detected, <ulink url="http://www.hsqldb.org/">HSQLDB</ulink> is used by 
+                default.  Also, if you already have a web-application server that you wish to use (such as 
+                <ulink url="http://tomcat.apache.org/">Tomcat</ulink>) you can drop in just the single WAR file 
+                provided and immediately sign on into the application.
+            </para>
+            <para>
+                Please see the <link linkend="installation">installation</link> section of this documentation for 
+                more details.  JTrac uses <ulink url="http://www.hibernate.org">Hibernate</ulink> and so it can 
+                use any database <ulink url="http://www.hibernate.org/260.html">supported by Hibernate.</ulink>
+            </para>                
+        </sect1>            
+        <sect1 id="features-customfields">
+            <title>Custom Fields</title>
+            <para>                    
+                JTrac can be used to effectively track various kinds of things such as Bugs, Action Items and Tasks.
+                You can easily add the following types of custom fields to a tracker project:
+                <itemizedlist>
+                    <listitem>
+                        <para>Drop Down List</para>
+                    </listitem>
+                    <listitem>
+                        <para>Free Text Field</para>
+                    </listitem>
+                    <listitem>
+                        <para>Date Picker</para>
+                    </listitem>
+                    <listitem>
+                        <para>(Decimal) Number</para>
+                    </listitem>                                
+                </itemizedlist>                   
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/custom-fields.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Setting up custom fields for a project</para>
+                    </caption>
+                </mediaobject>
+            </para>                
+        </sect1>
+        <sect1 id="features-customworkflow">
+            <title>Custom Workflow</title>
+            <para>
+                Each tracker project that you create can have a different workflow.  JTrac allows for 
+                complete customization of the tracker-item lifecycle, right down to the names of
+                each intermediate state.  You can even configure whether or not changing of values is
+                permitted given the current state within the workflow - and that too at a field-level.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/custom-workflow-before.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Default workflow - before customization</para>
+                    </caption>
+                </mediaobject>
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/custom-workflow-after.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>An example of a customized workflow</para>
+                    </caption>
+                </mediaobject>
+            </para>
+            <para>
+                This flexibility allows for some interesting possibilities.  For example if you want to maintain
+                a "percentage complete" field that can be updated at any time during the life-cycle of an item.
+                The snapshot below shows how you can set up a drop down field called "% Complete":
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/percent-complete-field.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Setting up of a drop down custom field called "% Complete"</para>
+                    </caption>
+                </mediaobject>
+            </para>
+            <para>
+                Then when customizing the roles and field-level permissions, all you need to do is specify that
+                the "% Complete" field is editable even when the status is "Open".
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/percent-complete-roles.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Making a custom field editable even after an item is newly created</para>
+                    </caption>
+                </mediaobject>
+            </para>
+            <para>
+                This results in the "% Complete" field being available for updating when anyone views an item
+                with a status of "Open".
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/percent-complete-history.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Example of a custom field that can be updated even when status is "Open"</para>
+                    </caption>
+                </mediaobject>
+            </para>            
+        </sect1>
+        <sect1 id="features-customroles">
+            <title>Custom Roles</title>
+            <para>
+                JTrac customization does not stop at workflow - you can also define different roles for each tracker
+                project that you set up.  This allows for power and flexibility - for example you could define that
+                a "DEVELOPER" role can only mark "Assigned" items as "Fixed" and that only a "TESTER" role has the
+                power to mark a "Fixed" item as "Closed".  JTrac allows you complete control over the workflow and
+                you can easily tweak it to fit your existing process rather than the other way around.
+            </para>
+            <para>
+                Also, field-level permissions can be mapped to roles.  This allows for even more flexibility - for
+                example, you can set a project up so that only a "MANAGER" can change the "Severity" level after a
+                bug is submitted.
+            </para>                
+        </sect1>        
+        <sect1 id="features-search">
+            <title>Search Custom Fields</title>
+            <para>
+                The intuitive search screen (shown below) allows for easy execution of common queries such as
+                find all items "logged by" or "assigned to" a user (or users).  JTrac allows for filtering even
+                on custom fields.
+            </para>
+            <para>
+                You can navigate back to the search setup screen from the search results screen and have the
+                search parameters still active.  This is useful when trying to tweak complex queries by 
+                trial and error.
+            </para>                
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/search.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>The search screen - which allows filtering on custom fields</para>
+                    </caption>
+                </mediaobject>
+            </para>                
+        </sect1>
+        <sect1 id="features-dashboard">
+            <title>Dashboard</title>
+            <para>
+                The default view when you log into JTrac is a very handy dashboard view that provides the most 
+                frequently used statistics at a glance. You can click on any of the numbers to immediately bring up 
+                the search results view listing the items matched. For example, clicking on the count of items 
+                "Logged By Me" would immediately display the list of items initiated by the currently logged in user.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/dashboard.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Statistics at a glance and search results available with just one click</para>
+                    </caption>
+                </mediaobject>
+            </para>                 
+        </sect1>            
+        <sect1 id="features-searchall">
+            <title>Search Across All Projects</title>
+            <para>
+                In addition to be able to search within a single space (project) JTrac allows for searching across
+                all (or a sub set of) projects that a user is mapped to.  For example, in the screenshot of the
+                dashboard above, there are two projects.  The "SEARCH" link at the top of the page (as well as the "search"
+                link on the "totals" row) would bring up the search wizard that can search across all (or a subset of)
+                the spaces assigned to the currently logged in user.
+            </para>                
+        </sect1>       
+        <sect1 id="features-textsearch">
+            <title>Full Text Search</title>
+            <para>
+                The summary and even the detailed descriptions of items are indexed and can be searched.
+                Note that if you are upgrading or migrating databases, you may need to "re-index" which
+                is an option available to admin users.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/full-text-search.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Lucene powered full text search with wildcard support</para>
+                    </caption>
+                </mediaobject>
+            </para>                 
+        </sect1>        
+        <sect1 id="features-excel">
+            <title>Export to Excel</title>
+            <para>
+                JTrac is able to export the results of any search (or all items in a Space) as an Excel Sheet.
+                The link for this appears at the top right of the search results screen.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/excel-link.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Download search results as an excel sheet</para>
+                    </caption>
+                </mediaobject>
+            </para>                
+        </sect1>
+        <sect1 id="features-attachments">
+            <title>Attachments Support</title>
+            <para>
+                You can upload file attachments at the time of creating of an item or as many times
+                as required after an item has been created.
+            </para>                
+        </sect1>            
+        <sect1 id="features-history">
+            <title>Detailed History View</title>
+            <para>
+                JTrac provides a very detailed history view that completely captures all comments or status
+                changes for an item.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/history.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>When viewing a single item, the history can be seen in detail</para>
+                    </caption>
+                </mediaobject>
+            </para>                  
+        </sect1>
+        <sect1 id="features-navigation">
+            <title>Simple Navigation</title>
+            <para>
+                Most users will use only five screens in JTrac: Dashboard, Create, View, Search and Results.
+                Navigation has been designed with usability and simplicity in mind.
+            </para>                 
+        </sect1>
+        <sect1 id="features-related">
+            <title>Cross Referencing of Items</title>
+            <para>
+                You can establish bi-directional links between items.  For example you can mark an item as
+                being a "duplicate of" another item.  You can easily navigate to related items (and back) when 
+                viewing any particular item.
+            </para>
+            <para>
+                The option to add related items appears at the bottom of the screen when viewing an item 
+                (after it is created).  The navigation is designed so that you have the option to execute a 
+                search before selecting an item to cross-reference.
+            </para>
+        </sect1>
+        <sect1 id="features-guest">
+            <title>Read-Only Access</title>
+            <para>
+                When setting up a Space you can define whether this space can be viewed by users without 
+                having to log-in.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/guest-allowed.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Specify if read-only anonymous access is allowed per-space</para>
+                    </caption>
+                </mediaobject>
+            </para>                 
+        </sect1>             
+        <sect1 id="features-email">
+            <title>E-mail Integration</title>
+            <para>
+                All status changes for an item will trigger e-mail notifications by default.
+                You can choose to add multiple users into a "notify list" at the time of raising a new item
+                or updating the history for an item.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/notify-list.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Add multiple users to a "notify list" while creating or updating an item</para>
+                    </caption>
+                </mediaobject>
+            </para>
+            <para>
+                The e-mail content is very nicely formatted HTML and is laid out in the same way as how the screen looks
+                within JTrac when viewing an item.  Users do not need to get used to a different or possibly
+                less pleasing format such as plain-text.
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/email-notification.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Example of an e-mail sent by JTrac</para>
+                    </caption>
+                </mediaobject>
+            </para>            
+        </sect1>                
+    </chapter>
+    
+    <chapter id="installation">
+        <title>Installation</title>
+        <sect1 id="installation-prerequisites">
+            <title>Prerequisites</title>
+            <para>    
+                All you require in order to start using JTrac is Java 5.  Only a JRE (Java Runtime Environment)
+                is required and not the full-blown JDK (Java Development Kit).
+            </para>
+            <para>    
+                You can download Java from <ulink url="http://www.java.com/download"/>.  Once you have Java installed
+                you can verify that your system is ready to run JTrac by opening a command prompt and typing the
+                following command:
+            </para>
+            <para>
+                <programlisting>
+
+java -version
+                </programlisting>
+            </para>
+            <para>
+                If the system responds with a java version that is 1.5 or greater, you are ready to download and run JTrac.
+            </para>            
+        </sect1>        
+        <sect1 id="installation-quick">
+            <title>Quick Installation</title>
+            <para>                    
+                Once you have Java you can start using JTrac right away because you do not need to configure a web-application 
+                server or a database.  JTrac embeds both of these (<ulink url="http://jetty.mortbay.org/">Jetty</ulink> and 
+                <ulink url="http://www.hsqldb.org/">HSQLDB</ulink>) to make it easy for you to evaluate JTrac.
+            </para>                  
+            <para>            
+                <itemizedlist>
+                    <listitem>
+                        <para>
+                            First, download the latest release from  
+                            <ulink url="http://sourceforge.net/project/showfiles.php?group_id=162983&amp;package_id=184104">
+                            the JTrac downloads area</ulink>.                            
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>Extract the zip file into a directory of your choice.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Double-click on "start.bat" to start JTrac.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Point your web-browser to <ulink url="http://localhost/jtrac"/></para>
+                    </listitem>
+                    <listitem>
+                        <para>Sign on with the user name "admin" and password "admin"</para>
+                    </listitem>
+                    <listitem>
+                        <para>Start using JTrac.</para>
+                    </listitem>                                 
+                </itemizedlist>                 
+            </para>
+            <para>
+                Note that you can use the "stop.bat" script to stop the application.
+                (If you are using Linux we are quite sure that you would be able to port these scripts to what you need
+                and kindly don't forget to contribute the scripts to the JTrac project with your feedback ;)
+            </para>
+            <para>
+                JTrac by default will use a "data" directory that it will automatically create
+                within the root (jtrac) folder.  The data directory will contain the files needed by HSQLDB
+                (the embedded database) as well as hold uploaded attachments.  The "start.bat" file configures the 
+                Jetty server to use port 80 which you can easily change by editing "start.bat".  You may need to do this 
+                if for example JTrac does not start because a web-server (like Apache or IIS) is already running on port 80.
+            </para>           
+        </sect1>
+        <sect1 id="installation-war">
+            <title>Using only the WAR file</title>
+            <para>
+                JTrac is designed so that you can be up and running by just deploying the WAR file into your 
+                existing web-application server.  Note that you need a servlet 2.4 compliant container.  
+                For example, if you have <ulink url="http://tomcat.apache.org/">Apache Tomcat</ulink> 5.5.X, 
+                you can either copy the WAR file into the [tomcat.home]/webapps folder or choose to upload 
+                the WAR file through the Tomcat console.
+            </para>
+            <para>                    
+                JTrac saves database information and uploaded attachments into a directory on the server.
+                This directory is logically called the "jtrac.home".  When you do a "quick-install" of JTrac
+                by just deploying the WAR file, JTrac creates a ".jtrac" folder in the user home folder and
+                uses that location as the home directory.
+            </para>            
+        </sect1>
+        <sect1 id="installation-custom">
+            <title>Custom Installation</title>
+            <para>                    
+                To customize the location of "jtrac.home" you have the following three options.  On startup, JTrac tries to
+                detect the value of "jtrac.home", and checks the following configuration options in the order listed below.
+            </para>
+            <sect2 id="installation-custom-initprops">
+                <title>Edit the "jtrac-init.properties" file</title>
+                <para>
+                    If you explode (unzip) the WAR file, you can edit the /WEB-INF/classes/jtrac-init.properties file
+                    and customize the location of "jtrac.home".  Note that you can choose to deploy JTrac as an exploded-war 
+                    and it is not mandatory that you re-package (zip) the WAR file after editing "jtrac-init.properties".
+                </para>
+            </sect2>
+            <sect2 id="installation-custom-servletparams">
+                <title>Set a Servlet context parameter</title>
+                <para>
+                    For example you can specify the jtrac.home using the Tomcat administration console or as 
+                    follows using a &lt;Context&gt; parameter.                     
+                </para>
+                <para>
+                    <programlisting>
+                        <![CDATA[                        
+<Context docBase="${catalina.home}/jtrac/jtrac.war">
+    <Parameter name="jtrac.home" value="C:/data/jtrac_home"/>
+</Context>              ]]>
+                    </programlisting>
+                </para>                
+            </sect2>            
+            <sect2 id="installation-custom-systemparams">
+                <title>Set a System / JVM parameter</title>            
+                <para>
+                    If you can easily set a system property called "jtrac.home" within the environment of your 
+                    application server then you don't need to edit the WAR file.  Please look at the contents of "start.bat" 
+                    to see an example of how the appropriate JVM (Java Virtual Machine) parameters can be set when deploying JTrac.  
+                    For example, if you are using <ulink url="http://tomcat.apache.org/">Apache Tomcat</ulink> 5.5.X, you can 
+                    set an environment variable called JAVA_OPTS before invoking the startup script (startup.bat / startup.sh).
+                    Here is an example for Tomcat 5.5.X on Windows:                
+                </para>
+                <para>
+                    <programlisting>
+
+set JAVA_OPTS=-Djtrac.home=C:/data/jtrac_home -Dfile.encoding=UTF-8
+                    </programlisting>
+                </para>
+                <para>
+                    If "jtrac.home" has not been configured in any of the above ways, JTrac will create a folder called
+                    ".jtrac" in the user home directory and proceed to use that as "jtrac.home".
+                </para>
+            </sect2>
+            <para>                    
+                You can configure the database that JTrac uses by editing the "jtrac.properties" file that JTrac expects
+                within the "jtrac.home" folder.  Note that if JTrac does not find a "jtrac.properties" file in the
+                expected location, JTrac creates a fresh one which is pre-configured for HSQLDB.  The contents of this file
+                are as follows:                
+            </para>
+            <para>
+                <programlisting>
+
+database.driver=org.hsqldb.jdbcDriver
+database.url=jdbc:hsqldb:file:${jtrac.home}/db/jtrac
+database.username=sa
+database.password=
+hibernate.dialect=org.hibernate.dialect.HSQLDialect
+hibernate.show_sql=false
+                </programlisting>
+            </para>          
+            <para>
+                You can change the database values and the hibernate dialect to match the settings of a 
+                database that you have already.  When JTrac starts, it will connect to the database and
+                create the schema if one does not already exist.
+            </para>
+            <para>
+                If you edit the "jtrac.properties" file, ensure that there are no trailing spaces in the entries shown above
+                (especially when cutting and pasting from somewhere).  This can save you a lot of frustration!
+            </para>
+            <para>
+                Don't forget to make the database driver available for the web-application.  If you are using the bundled
+                Jetty web-app server, this is as simple as copying the jar file into the "lib" folder along with the
+                jetty jar files.  If you are using Tomcat, you can either place the jar file under "shared/lib" or within
+                the "/WEB-INF/lib" folder of the "jtrac" (exploded) WAR itself.
+            </para>            
+            <para>
+                Given below is a sample jtrac.properties file for MySQL.  Using the default "root" user is obviously
+                not advisable from a security point of view and you should try and have a separate user for the database
+                used by JTrac.
+                <programlisting>
+
+database.driver=com.mysql.jdbc.Driver
+database.url=jdbc:mysql://localhost/jtrac
+database.username=root
+database.password=
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+hibernate.show_sql=false
+                </programlisting>
+            </para>              
+        </sect1>
+        <sect1 id="installation-upgrading">
+            <title>Upgrading from previous versions</title>
+            <para>
+                If you are using an earlier version of JTrac in production you may have to upgrade your database schema.  
+                Instructions on how to upgrade are available 
+                <ulink url="http://sourceforge.net/forum/forum.php?thread_id=1592046&amp;forum_id=552477">here</ulink>
+                on the JTrac forums.
+            </para>
+        </sect1>
+        <sect1 id="installation-windowsservice">
+            <title>Installing as a Windows Service</title>
+            <para>                    
+                If you choose to use the bundled <ulink url="http://jetty.mortbay.org/">Jetty</ulink> web-application 
+                server, you can easily install JTrac as a Windows service so that it can start automatically when 
+                the host machine is switched on.
+            </para>
+            <para>
+                You can do this by using the <ulink url="http://wrapper.tanukisoftware.org/">Java Service Wrapper</ulink>
+                project.  For convenience, the JTrac distribution contains a "wrapper.conf" file in the "etc"
+                folder that is pre-configured for the Java Service Wrapper.  But first you have to download the 
+                Java Service Wrapper distribution separately.
+            </para>
+            <para>
+                Place some of the files from the Java Service Wrapper distribution into the JTrac folder structure
+                as follows:
+                <itemizedlist>
+                    <listitem>
+                        <para>From the "bin" folder, copy "wrapper.exe" to the "jtrac" root folder</para>
+                    </listitem>
+                    <listitem>
+                        <para>From the "lib" folder, copy "wrapper.jar" and "wrapper.dll" into the "jtrac/etc" folder</para>
+                    </listitem>                               
+                </itemizedlist>                 
+            </para>
+            <para>
+                To install JTrac as a windows service, open a command prompt, change to the "jtrac" directory
+                (where you extracted the JTrac distribution) and run the following command:
+            </para>
+            <para>
+                <programlisting>
+
+wrapper.exe -i etc/wrapper.conf
+                </programlisting>
+            </para>
+            <para>
+                This will install a windows service called "JTrac-Jetty".  You can now go to the Windows -
+                Control Panel :: Administrative Tools :: Services dialog to start the "JTrac-Jetty" service.
+                Note that this service is configured to automatically start when Windows starts, by default.
+                To remove the service, you can use the following command:
+            </para>
+            <para>
+                <programlisting>
+
+wrapper.exe -r etc/wrapper.conf
+                </programlisting>
+            </para>
+            <para>
+                When running as a service under the Java Service Wrapper, you can look at the
+                "wrapper.log" file in the "jtrac/logs" folder for troubleshooting.  Note that the 
+                [jtrac.home] folder would contain the application log called "jtrac.log" as well.
+            </para>
+        </sect1>
+    </chapter>      
+    
+    <chapter id="faq">
+        <title>FAQ</title>
+        <sect1 id="faq-why">
+            <title>Do we really need another issue tracker?</title>
+            <para>
+                There are indeed quite a few issue trackers available, both commercial and open source.
+                JTrac has flexible workflow capabilities and offers a rare level of control over field-level 
+                permissions. JTrac is designed to be able to handle requirements management in the future 
+                and this an area where there is a clear lack of open source tools that support
+                the needs of agile development teams.
+            </para>
+            <para>
+                JTrac is also written from the ground up to make use of the very best and latest in Java.  For example
+                JTrac is developed using JDK 5.0 features and is targeted at JSP 2.0 and above.
+            </para>               
+        </sect1>
+        <sect1 id="faq-architecture">
+            <title>What is the JTrac architecture like?</title>
+            <para>
+                JTrac is built using the <ulink url="http://www.springframework.org">Spring Framework</ulink> as far as 
+                possible and mostly uses 
+                <ulink url="http://opensource.atlassian.com/confluence/spring/display/WEBFLOW/Home">Spring WebFlow</ulink>
+                within the MVC layer apart from Spring MVC.  Also the <ulink url="http://www.acegisecurity.org/">Acegi Security</ulink>
+                framework for Spring has been used.  JTrac is effectively a "light-weight" Java EE application and any 
+                version 2.4 compliant servlet engine is sufficient for deployment.
+            </para>
+            <para>
+                The presentation layer is JSP and JSTL based with a minimal amount of Javascript.  AJAX features will be 
+                introduced into the screens going forward but only where there is value add.
+            </para>            
+            <para>
+                <ulink url="http://www.hibernate.org/">Hibernate</ulink> is used for data persistence.  This allows for 
+                JTrac to be database neutral and any database supported by Hibernate can be used.
+            </para>
+        </sect1>
+        <sect1 id="faq-version">
+            <title>Why start with version 2.0?  What about 1.0?</title>
+            <para>
+                There was an earlier version of JTrac which used to be hosted at <ulink url="https://jtrac.dev.java.net"/>
+                That project was called "jTrac" (with a lowercase 'j') and it was based on Spring JDBC and MS Access.                
+                JTrac has now been completely re-written to use Hibernate, Spring WebFlow and Acegi - and the 2.0 version
+                number reflects this.
+            </para>
+        </sect1>     
+    </chapter>    
+    
+    <chapter id="roadmap">
+        <title>Roadmap</title>
+        <para>
+            Have a look at our detailed <link linkend="dev-guide">developer guide</link> and you will find that 
+            JTrac has one of the most "developer-friendly" setups among open-source projects.  It will take you
+            only a few minutes to be up and running no matter which java IDE you use.  We actively encourage 
+            contributions and with your support JTrac can become better than it is today.
+        </para>       
+        <sect1 id="roadmap-hide">
+            <title>Field-Level "Hide" Permissions</title>
+            <para>
+                In a future version of JTrac, the ability to even hide fields depending on the role and status
+                will be implemented.  The design for this is already in place.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-nested">
+            <title>Nested Items</title>
+            <para>
+                JTrac will support "nested" items under a first-level "parent" item and the design
+                and database schema for this is already in place.  This will allow users to split tasks into sub-tasks 
+                and opens up other possibilities.  One of the plans in the roadmap is to build JTrac into a full-fledged
+                requirements capture tool complete with test-case management and traceability.  JTrac can then be used to
+                manage either XP (eXtreme Programming) or Use Case driven projects.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-validation">
+            <title>Custom Validation</title>
+            <para>
+                Using <ulink url="http://www.beanshell.org/">Beanshell</ulink>, users will be able to add custom validation 
+                routines for item entry.  Even conditional validation across fields will be possible.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-scheduler">
+            <title>Custom Scheduled Jobs</title>
+            <para>
+                Again using Beanshell, users should be able to define routines to execute periodically, say at a pre-determined
+                time every day.  This would allow triggers for events such as slippage of a "due-date" field.
+                This can be combined with e-mail notifications.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-email">
+            <title>Submit By Email</title>
+            <para>
+                JTrac should be able to monitor an e-mail account and incoming e-mail should trigger
+                creation / updation of items.  It would be handy to have attachments submitted through
+                email also.
+            </para>
+        </sect1>        
+        <sect1 id="roadmap-savedsearches">
+            <title>Saved Searches</title>            
+            <para>
+                It should be possible for users to save search filters and re-use them.
+            </para>
+        </sect1>         
+        <sect1 id="roadmap-wiki">
+            <title>Wiki Engine</title>            
+            <para>
+                There is a plan to embed a wiki-engine into JTrac.  This will supplement the requirements management
+                road map.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-svn">
+            <title>Subversion Integration</title>            
+            <para>
+                Integration with <ulink url="http://subversion.tigris.org/">Subversion</ulink> has already been implemented 
+                using the <ulink url="http://tmate.org/svn/">JavaSVN</ulink> library and this will enable effective 
+                integration of bug reports with commit history in the future. You can try out the existing experimental 
+                support by going to the following url of your JTrac installation: http://[hostname]/jtrac/app/svn_form.htm                
+            </para>
+            <para>
+                <mediaobject>
+                    <imageobject role="html">
+                        <imagedata align="center" fileref="../images/svn-view.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Experimental Subversion support: commits per user report</para>
+                    </caption>
+                </mediaobject>
+            </para>            
+        </sect1>
+        <sect1 id="roadmap-tags">            
+            <title>Tags</title>            
+            <para>
+                A one-to-many data model for being able to tag items will be introduced before JTrac goes into 
+                version 2.0 final.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-feeds">            
+            <title>RSS Feeds</title>            
+            <para>
+                RSS feeds will be introduced at the dashboard level for items and even for Subversion 
+                repository information.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-i18n">            
+            <title>Internationalization</title>            
+            <para>
+                Multi language support to be added.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-import">            
+            <title>Import from other tools</title>            
+            <para>
+                Import from other issue tracking systems (such as BugZilla) to be considered.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-cas">            
+            <title>CAS (Single Sign On)</title>            
+            <para>
+                Since JTrac uses the <ulink url="http://www.acegisecurity.org/">Acegi Security</ulink> 
+                framework, it would be easy to configure it to use an existing 
+                <ulink url="http://www.ja-sig.org/products/cas/">Central Authentication Service</ulink> (CAS) installation 
+                for implementing Single Sign On. In fact most of the configuration is in place and only needs to be documented.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-xmlapi">            
+            <title>XML API</title>            
+            <para>
+                JTrac should be able to expose a remote XML API (SOAP or REST) so that core functionality can be 
+                invoked / integrated with other systems.
+            </para>
+        </sect1>
+        <sect1 id="roadmap-timetracking">            
+            <title>Time Tracking</title>            
+            <para>
+                The database schema already has support for capturing planned vs actual effort against items.
+                This needs to be implemented and obviously will open up a lot of possibilities.
+            </para>
+        </sect1>       
+    </chapter>
+    
+    <chapter id="dev-guide">
+        <title>Developer Guide</title>
+        <sect1 id="dev-prerequisites">
+            <title>Pre Requisites</title>
+            <para>
+                <itemizedlist>
+                    <listitem>
+                        <para>JDK 5.0</para>
+                    </listitem>
+                    <listitem>
+                        <para><ulink url="http://maven.apache.org/">Maven 2.0</ulink></para>
+                    </listitem>
+                    <listitem>
+                        <para>Your Favourite IDE (e.g. NetBeans)</para>
+                    </listitem>
+                    <listitem>
+                        <para>Access to the internet (or a Maven 2 repository)</para>
+                    </listitem>                                
+                </itemizedlist> 
+            </para>
+            <para>
+                The JTrac development environment uses Maven 2 only for dependency management and generating and deploying the JTrac 
+                website hosted at SourceForge.  Almost all other development actions (clean, compile etc) are fired through
+                a detailed Ant script that is able to use the dependency information managed by Maven.  Using Maven ensures that
+                no binaries (JAR files) need to be checked into version control at all.
+            </para>
+            <para>
+                You can get some idea about the details and rationale of the custom Ant + Maven integration approach from
+                <ulink url="http://ptrthomas.wordpress.com/2006/04/18/another-way-to-integrate-maven-2-with-ant-and-netbeans/">this blog post.</ulink>
+            </para>
+            <para>
+                Although NetBeans is preferred by the JTrac developers, the reliance on an "IDE Neutral" Ant script
+                ensures that you would easily be able to use Eclipse (or any other IDE of your choice) without any problems.
+            </para>
+            <para>
+                If you get stuck or have any questions about setting up and getting started, feel free to use the 
+                <ulink url="http://sourceforge.net/forum/forum.php?forum_id=552477">JTrac forums</ulink> for help.
+            </para>
+        </sect1>
+        <sect1 id="dev-check-prerequisites">
+            <title>Check Prerequisites</title>
+            <para>
+                Maven 2 should be in your "PATH".  You can test this out by opening a command prompt and trying to run the
+                command "mvn".  If this is set, you are ready to move to the next step.
+            </para>
+        </sect1>
+        <sect1 id="dev-download">
+            <title>Download / Extract Source</title>
+            <para>
+                Download the source code from 
+                <ulink url="http://sourceforge.net/project/showfiles.php?group_id=162983&amp;package_id=184104">SourceForge</ulink>
+                and extract it to a convenient location.  You will end up with two directories ("antprops" and "jtrac").
+            </para>
+            <para>
+                You could choose to check out the source code directly from the JTrac SourceForge Subversion repository.
+                You have to perform two separate check-outs, one for the "antprops" Maven plugin and of course "jtrac" itself.
+            </para> 
+           <para>
+               Subversion URL for the Maven 2 "Antprops" plugin:
+                <programlisting>
+
+https://svn.sourceforge.net/svnroot/j-trac/trunk/maven-antprops-plugin
+                </programlisting>               
+           </para>
+           <para>
+               Subversion URL for the JTrac source code:
+                <programlisting>
+
+https://svn.sourceforge.net/svnroot/j-trac/trunk/jtrac
+                </programlisting>               
+           </para>
+           <para>
+               If you are behind a corporate firewall that requires NTLM authentication, you can try a tool called
+               <ulink url="http://ntlmaps.sourceforge.net/">NTLMAPS</ulink> to check out from Subversion.
+           </para>
+           <para>
+               If you are using Windows, we recommend <ulink url="http://tortoisesvn.tigris.org/">TortoiseSVN</ulink>
+                as a Subversion client.
+           </para>           
+        </sect1>        
+        <sect1 id="dev-antprops-install">
+            <title>Install the "Antprops" Maven 2 Plugin</title>
+            <para>
+                This is a "one-time" step that installs a custom Maven 2 plugin into your local repository.
+                Open a command prompt and change to the (root of the) "antprops" directory.  Run the following command:                
+            </para>
+            <para>
+                <programlisting>
+
+mvn install
+                </programlisting>
+            </para>
+            <para>
+                If this does not work, maybe you are not connected to the internet.
+            </para>
+        </sect1> 
+        <sect1 id="dev-build-properties">
+            <title>Customize Ant Build Properties File</title>
+            <para>
+                The downloaded source code should contain a sample "build.properties" file or you can look at the XML comment
+                provided at the top of "build.xml" for the structure.  Actually both entries are optional and you will require 
+                them only if you want to use Tomcat (instead of Jetty) and also try the <ulink url="http://watij.com/">Watij</ulink>
+                automated functional test script.
+            </para>
+            <para>
+                If you are in a hurry and can't wait to start working on JTrac you can skip setting up Tomcat or Watij.  
+                But then, ensure that you remove the build.properties file if one already exists - before the next step.
+            </para>            
+        </sect1>        
+        <sect1 id="dev-antprops-generate">
+            <title>Generate Dependencies Properties File</title>
+            <para>
+                Open a command prompt and change to the "jtrac" folder.  Run the following command:                
+            </para>
+            <para>
+                <programlisting>
+
+mvn antprops:generate
+                </programlisting>
+            </para>
+            <para>
+                This step will not only download all the required JAR files (which may take time only for the first time),
+                but also generate a standard properties file that will contain all the information required for
+                the Ant build script to operate.  The file generated is called "build-deps.properties"
+            </para>            
+        </sect1>
+        <sect1 id="dev-eclipse">
+            <title>Import project into your IDE</title>
+            <para>
+                If you are a NetBeans user you are ready to build and run JTrac!  Just use the "Open Project"
+                option from the menu.
+            </para>
+            <para>
+                If you want to use Eclipse, that's easy as well.  You need to first run the following command and
+                Maven will then generate your Eclipse project descriptor files for you.
+            </para>
+            <para>
+                <programlisting>
+
+mvn eclipse:eclipse
+                </programlisting>
+            </para>
+            <para>
+                That should create the ".project" and the ".classpath" files.  Now its just a matter of
+                importing "Existing Project into Workspace" within Eclipse.
+            </para>          
+        </sect1>
+        <sect1 id="dev-building">
+            <title>Building And Running JTrac</title>
+            <para>
+                You can explore all the Ant targets that are available. You can also try the "jetty-start" 
+                Ant target straight away that will compile, create and deploy the WAR as well as boot a Jetty server.
+                For NetBeans users, the "jetty-start" target is neatly mapped to the "Run Main Project (F6)" shortcut, 
+                once you make JTrac the "main project".  Note that this Ant target is smart enough to detect if Jetty 
+                is already running and will perform a shutdown if required before re-starting.
+            </para>
+            <para>
+                Maven has been configured to download the Jetty web server which makes the amount of
+                setup that you need to do in order to set up your development environment - minimal.
+                Since JTrac creates the HSQLDB database if required on startup, you do not need to worry about 
+                installing, configuring and creating any database either.
+            </para>            
+            <para>
+                Note that if you use NetBeans, you can debug and set breakpoints even in JSPs.  If you are interested
+                in more information as to why you should consider using NetBeans for development, please refer this
+                <ulink url="http://ptrthomas.wordpress.com/2006/04/11/reasons-for-switching-to-netbeans/">blog post.</ulink>
+            </para>
+            <para>
+            	If you want to use Apache Tomcat instead of Jetty, just have "build.properties" point to a valid Tomcat instance.            
+                By now, you may have noticed that because of the 
+                <ulink url="http://ptrthomas.wordpress.com/2006/03/25/how-to-start-and-stop-tomcat-from-ant/">Ant script</ulink>, 
+                you don't even need a Tomcat or Jetty plugin in either NetBeans or Eclipse.
+            </para>            
+        </sect1>
+    </chapter>
+    
+</book>

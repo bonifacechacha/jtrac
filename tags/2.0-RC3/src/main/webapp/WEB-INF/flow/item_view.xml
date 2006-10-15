@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE flow PUBLIC "-//SPRING//DTD WEBFLOW 1.0//EN"
+	"http://www.springframework.org/dtd/spring-webflow-1.0.dtd">
+
+<flow start-state="itemViewForm">      
+    
+    <input-mapper>        
+        <mapping source="space" target="flowScope.space"/>
+        <mapping source="item" target="requestScope.item"/>
+        <mapping source="itemSearch" target="flowScope.itemSearch"/>
+        <mapping source="calledBySearch" target="flowScope.calledBySearch"/>
+        <mapping source="calledByRelate" target="requestScope.calledByRelate"/>
+        <mapping source="relatingItem" target="requestScope.relatingItem"/>
+    </input-mapper>    
+    
+    <view-state id="itemViewForm" view="item_view_form">
+        <entry-actions>
+            <action bean="itemViewFormAction" method="setupForm"/>
+        </entry-actions>
+        <transition on="submit" to="itemViewForm">
+            <action bean="itemViewFormAction" method="bind"/>
+            <action bean="itemViewFormAction" method="itemViewHandler"/>
+        </transition>
+        <transition on="back" to="itemListView"/>
+        <transition on="relateSearch" to="itemSearchRelatedForm">
+            <action bean="itemViewFormAction" method="relateHandler"/>
+        </transition>
+        <transition on="relateSubmit" to="relateSubmit"/>
+        <transition on="viewRelated" to="itemViewForm"/>
+        <transition on="edit" to="itemEditForm"/>
+    </view-state>
+    
+    <subflow-state id="itemEditForm" flow="item">
+        <transition on="backFromEdit" to="itemViewForm"/>
+    </subflow-state>
+    
+    <subflow-state id="itemSearchRelatedForm" flow="item_search">
+        <attribute-mapper>
+            <input-mapper>
+                <!-- just for enabling "back" navigation in item_search_form.jsp -->
+                <mapping source="requestScope.calledByRelate" target="calledByRelate"/>
+                <mapping source="requestScope.item" target="relatingItem"/>
+            </input-mapper>
+        </attribute-mapper>
+        <transition on="relateSubmit" to="itemViewForm">
+            <action bean="itemViewFormAction" method="relateSubmitHandler"/>
+        </transition>
+        <transition on="backFromSearch" to="itemViewForm"/>       
+    </subflow-state>     
+    
+    <end-state id="itemListView"/>
+    
+    <end-state id="relateSubmit"/>
+    
+</flow>
+

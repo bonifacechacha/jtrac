@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!-- Acegi security configuration as Spring context -->
+
+<beans> 
+    
+    <bean id="authenticationFilter" class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationFailureUrl" value="/auth/login.htm?error=true"/>
+        <property name="defaultTargetUrl" value="/app"/>
+        <property name="filterProcessesUrl" value="/app/j_acegi_security_check"/>
+        <property name="rememberMeServices" ref="rememberMeServices"/>
+    </bean>    
+    
+    <bean id="authenticationProvider" class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="jtrac"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>          
+    
+    <bean id="authenticationEntryPoint" class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+        <property name="loginFormUrl" value="/auth/login.htm"/>
+    </bean>   
+           
+</beans>
+
+
